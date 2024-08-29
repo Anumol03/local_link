@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <title>Responsive Registration Form | CodingLab</title>
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="container">
+    <div class="title">User Registration</div>
+    
+    <!-- Messages block -->
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <!-- End of Messages block -->
+    
+    <div class="content">
+      <form method="POST" action="">
+        {% csrf_token %}
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Username</span>
+            <input type="text" placeholder="Enter your username" name="username" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Email</span>
+            <input type="email" placeholder="Enter your email"  name="email" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Name</span>
+            <input type="text" placeholder="Enter your Name" name="name" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Adhar No</span>
+            <input type="text" placeholder="Enter your Adhar number" name="adhar_no" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Ward No</span>
+            <input type="text" placeholder="Enter your Ward number" name="ward_no" required>
+          </div>
+          <div class="input-box">
+            <span class="details">House No</span>
+            <input type="text" placeholder="Enter your House number" name="house_no" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Password</span>
+            <input type="password" placeholder="Enter your password" name="password" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="password" placeholder="Confirm your password" name="confirm_password" required>
+          </div>
+        </div>
+        <div class="input-box">
+          <span class="details">Profile Picture</span>
+          <input type="file" name="profile_pic" id="profile_pic" required>
+        </div>
+        <div class="button">
+          <input type="submit" value="Register">
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
