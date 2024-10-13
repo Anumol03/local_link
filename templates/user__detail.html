@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content_block %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+<div class="container-fluid border border-3 shadow bg-white mt-3">
+    <!-- Cover and Profile Picture Section -->
+    <div class="cover_section">
+        <img class="coverpic shadow" src="{{ user.cover_pic.url }}" alt="Cover Picture" style="width: 100%; height: 200px;">
+    </div>
+    <div class="profile_section d-flex justify-content-between p-3">
+        <div>
+            {% if user.profile_pic %}
+                <img src="{{ user.profile_pic.url }}" class="rounded-circle" style="height: 100px; width: 100px;" alt="Profile Picture">
+            {% else %}
+                <img src="/media/profilepics/default.jpg" class="rounded-circle" style="height: 100px; width: 100px;" alt="Profile Picture">
+            {% endif %}
+        </div>
+        <h1>{{ user.username }}</h1>
+        <div>
+            <!-- Change Cover Picture Modal Button -->
+            {% if request.user == user %}
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLabel">Change Cover Pic</button>
+            {% endif %}
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{%url 'coverpic-change' user.id%}" method="post" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    <input type="file" accept="image/*" name="cover_pic">
+                    <div class="modal-body">
+                        ...
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                      </div>
+                </form>
+              </div>
+            </div>
+          </div>
+                    <!-- end cover_pic change model -->
+        
+                </div>
+                <div class="row d-flex justify-content-evenly">
+                    <div class="col-4 text-center mt-3 swich  "><a class="btn fs-5" href=""><span><i class="fa-solid fa-book"></i></span> Time line</a></div>
+                    <!-- followers modal -->
+                    <div class="modal fade" id="exampleModalfws" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabelfws">Modal title</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                            </div>
+                            <div class="modal-body">
+                              {%for prof in request.user.profile.followed_by.all%}
+                              {{prof}}
+                              {%endfor%}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+    </div>
+    <div class="row">
+        <!-- Left column for user details -->
+        <div class="col-3">
+            <div class="p-3 bg-white border">
+                <h3>About</h3>
+                <p>{{ user.description }}</p>
+                <h4>Date Of Birth</h4>
+                <p>{{ user.dob|date:'D d M Y' }}</p>
+                <h4>Ward No</h4>
+                <p>{{ user.ward_no }}</p>
+                <h4>House</h4>
+                <p>{{ user.house_no }}</p>
+                <h4>Adhar No</h4>
+                <p>{{ user.adhar_no }}</p>
+            </div>
+        </div>
+
+        <!-- Middle column for posts (6 columns width) -->
+        <div class="col-6">
+            <div class="row g-3">
+                {% for post in posts %}
+                    <div class="col-12 bg-white border rounded p-3">
+                        <div class="d-flex justify-content-between">
+                            <h5>{{ post.title }}</h5>
+                            <small>{{ post.created_date|date:"d M Y" }}</small>
+                        </div>
+                        <img src="{{ post.image.url }}" class="img-fluid rounded mt-2" alt="Post Image">
+                        <p class="mt-2">{{ post.user }}</p>
+                        <div class="d-flex justify-content-between">
+                            <p>{{ post.liked_by.count }} Likes</p>
+                            <p>{{ post.comments.count }} Comments</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>No posts available.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Right column (empty for now) -->
+        <div class="col-3">
+            <!-- You can add any additional content here, like suggestions -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal for changing cover picture -->
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

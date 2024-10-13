@@ -1,12 +1,17 @@
 
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.hashers import check_password
 
 from myapp.models import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from myapp.forms import *
+from django.urls import reverse_lazy
+from django.contrib.auth.decorators import login_required
+
+
 
 def register(request):
     if request.method == 'POST':
@@ -78,5 +83,82 @@ def login_view(request):
     return render(request, 'login.html')
 
 
+
+
 def index(request):
-    return render(request,'index.html')
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.instance.user = request.user
+            form.save()
+            return redirect(reverse_lazy('index'))
+    else:
+        form = PostForm()
+
+    posts = Posts.objects.all()
+    context = {
+        'form': form,
+        'posts': posts,
+    }
+    return render(request, 'index.html', context)
+
+def edit_user(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('edit_user', user_id=user.id)  # Redirect to user's profile or any other page
+    else:
+        form = UserEditForm(instance=user)
+
+    return render(request, 'edit_user.html', {'form': form,'user_id': user_id})
+
+def profile_detail(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    posts = Posts.objects.filter(user=user).order_by('-created_date')  # List user's posts
+    return render(request, 'user__detail.html', {'user': user, 'posts': posts})
+@login_required
+def add_like_view(request,*args,**kargs):
+    id=kargs.get("pk")
+    post_obj=Posts.objects.get(id=id)
+    post_obj.liked_by.add(request.user)
+    return redirect("index")
+@login_required
+def add_comment_view(request,*args,**kargs):
+    id=kargs.get("pk")
+    post_obj=Posts.objects.get(id=id)
+    comment=request.POST.get("comment")
+    user=request.user
+    Comments.objects.create(user=user,comment_text=comment,post=post_obj)
+    return redirect("index")
+
+
+@login_required
+def remove_comment_view(request,*args,**kargs):
+    id=kargs.get("pk")
+    comment_obj=Comments.objects.get(id=id)
+    if request.user == comment_obj.user:
+        comment_obj.delete()
+        return redirect("index")
+    else:
+        messages.error(request,"pls contact admin")
+        return redirect("signin")
+@login_required    
+def change_cover_pic_view(request,*args,**kargs):
+    id=kargs.get("pk")
+    prof_obj=UserEditForm.objects.get(id=id)
+    form=CoverpicForm(instance=prof_obj,data=request.POST,files=request.FILES)
+    if form.is_valid():
+        form.save()
+        return redirect("profiledetail",pk=id)
+    return redirect("profiledetail",pk=id)
+
+
+def district(request):
+    return render(request,"district.html")
+
+
+def thrissur(request):
+    return render(request,"thrissur.html")

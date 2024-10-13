@@ -23,5 +23,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
-    path('index/',index,name="index")
+    path('index/',index,name="index"),
+    path('edit_user/<int:user_id>/', edit_user, name='edit_user'),
+    path('detail_user/<int:user_id>/', profile_detail, name='profile_detail'),
+    path('posts/<int:pk>/like',add_like_view,name="add-like"),
+    path('posts/<int:pk>/comments/add',add_comment_view,name="add-comment"),
+    path('comments/<int:pk>/remove/',remove_comment_view,name="removecomment"),
+    path('profiles/<int:pk>/coverpic/change/',change_cover_pic_view,name="coverpic-change"),
+    path('',district,name='district'),
+    path('thrissur/',thrissur,name='thrissur')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
