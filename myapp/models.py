@@ -9,6 +9,11 @@ class Ward(models.Model):
     def __str__(self) :
         return self.name
     
+class Service(models.Model):
+    service_name=models.CharField(max_length=100)
+    def __str__(self):
+        return self.service_name
+    
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
         ('service', 'Service'),
@@ -26,9 +31,14 @@ class CustomUser(AbstractUser):
     is_approved = models.BooleanField(default=False)
     dob=models.DateField(null=True,blank=True)
     cover_pic=models.ImageField(upload_to="coverpics/",blank=True,)
+    service=models.ForeignKey(Service,on_delete=models.CASCADE,null=True,blank=True)
 
     def __str__(self):
         return self.username
+    def save(self, *args, **kwargs):
+        if self.pk is None:  # Only hash the password when creating a new user
+            self.set_password(self.password)
+        super().save(*args, **kwargs)
     
 class Posts(models.Model):
     title=models.CharField(max_length=200)
@@ -51,3 +61,17 @@ class Comments(models.Model):
 
     def __str__(self):
         return self.comment_text
+    
+
+class History(models.Model):
+    picture = models.ImageField(upload_to='history_pics/', blank=True, null=True)  # For uploading an image
+    heading = models.CharField(max_length=255)  # Title or heading of the historical event
+    content = models.TextField()  # Detailed description/content
+    year_start = models.PositiveIntegerField()  # Starting year
+    year_end = models.PositiveIntegerField(blank=True, null=True)  # Ending year (can be blank for ongoing events)
+
+    def __str__(self):
+        return self.heading
+    
+
+    

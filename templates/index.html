@@ -2,7 +2,7 @@
 {%load static%}
 <html>
 <head>
-<title>FINSTA Template</title>
+<title>Local Link</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -20,11 +20,11 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
 <!-- Navbar -->
 <div class="w3-top">
  <div class="w3-bar w3-theme-d2 w3-left-align w3-large">
-  <a href="" class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-white" title="Logout">
-    Logout
+  <a href="{%url 'logout' %}" class="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-white" title="Logout">
+    <i class="fa-solid fa-power-off"></i>
   </a>
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>FINSTA</a>
+  <a href="{%url 'index' %}" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Local Link</a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a>
   <a href="" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Account Settings"><i class="fa fa-user"></i></a>
   <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Messages"><i class="fa fa-envelope"></i></a>
@@ -68,11 +68,11 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
          {%endif%}
          <hr>
         
-    
+         {% if request.user.is_authenticated %}
          <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> {{ user.name }}</p>
          <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i>{{ user.description }}</p>
          <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> {{ user.dob|date:'D d M Y' }}</p>
-         
+         {% endif %}
         </div>
       </div>
       <br>
@@ -81,14 +81,16 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       <div class="w3-card w3-round">
         <div class="w3-white">
           
+          {% if request.user.is_authenticated %}
           <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
-            {% if request.user.is_authenticated %}
+            
             <i class="fa-solid fa-user"></i>
             
             <a href="{%url 'profile_detail' user.id%}" class="text-white">My Profile</a>
-            {% endif %}
+           
            
           </button>
+          {% endif %}
           <div id="Demo1" class="w3-hide w3-container">
             <!-- <p>Some text..</p> -->
           </div>
@@ -100,19 +102,97 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
             <a href="{% url 'edit_user' user.id %}" class="text-white">Edit Profile</a>
             {% endif %}
           </button>
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+           
+            <i class="fa-solid fa-clock-rotate-left"></i>
+           
+            
+            <a href="{%url 'history-list' %}" class="text-white">History</a>
+            
+          </button>
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
+            <i class="fa-brands fa-medium"></i>
+           
+            
+            <a href="{%url 'service_list' %}" class="text-white">Services</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
+            <i class="fa-solid fa-person"></i>
+           
+            
+            <a href="" class="text-white">Kisan</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
+            <i class="fa-brands fa-medium"></i>
+           
+            
+            <a href="{%url 'service_list' %}" class="text-white">KSEB</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
+            <i class="fa-brands fa-medium"></i>
+           
+            
+            <a href="{%url 'service_list' %}" class="text-white">Water Authority</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
+            <i class="fa-brands fa-medium"></i>
+           
+            
+            <a href="{%url 'service_list' %}" class="text-white">Budget</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
+            <i class="fa-brands fa-medium"></i>
+           
+            
+            <a href="{%url 'service_list' %}" class="text-white">Pension</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
+            <i class="fa-brands fa-medium"></i>
+           
+            
+            <a href="{%url 'service_list' %}" class="text-white">Complaint and Feedback</a>
+           
+          </button>
+          {% endif %}
           <div id="Demo1" class="w3-hide w3-container">
-            <p>Some text..</p>
+            <!-- <p>Some text..</p> -->
           </div>
-          <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-calendar-check-o fa-fw w3-margin-right"></i> My Events</button>
+          <a href="{%url 'register' %}"><button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa-solid fa-user-lock"></i>SignUp</button></a>
           <div id="Demo2" class="w3-hide w3-container">
-            <p>Some other text..</p>
+            <!-- <p>Some other text..</p> -->
           </div>
-          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-users fa-fw w3-margin-right"></i> My Photos</button>
+          <a href="{%url 'login' %}"><button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa-solid fa-lock-open"></i>SignIn </button></a>
           <div id="Demo3" class="w3-hide w3-container">
          <div class="w3-row-padding">
          <br>
         
-           <div class="w3-half">
+           <!-- <div class="w3-half">
              <img src="/w3images/lights.jpg" style="width:100%" class="w3-margin-bottom">
            </div>
            <div class="w3-half">
@@ -129,7 +209,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
            </div>
            <div class="w3-half">
              <img src="/w3images/snow.jpg" style="width:100%" class="w3-margin-bottom">
-           </div>
+           </div> -->
          </div>
           </div>
         </div>      

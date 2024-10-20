@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content_block %}
+<div class="container-fluid my-5">
+    <h2 class="text-center mb-4">Service List</h2>
+
+    <div class="row">
+        {% for service_info in service_data %}
+        <div class="col-12 mb-4"> <!-- Changed to col-12 to utilize full width -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title">{{ service_info.service.service_name }}</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Users who have added posts:</h6>
+                    {% if service_info.users_with_posts %}
+                    <div class="row">
+                        {% for user_info in service_info.users_with_posts %}
+                            {% if user_info.posts %}
+                            <div class="col-12 col-md-6 mb-3"> <!-- Full width on small screens and half width on medium and larger screens -->
+                                <div class="user-card p-3 border rounded">
+                                    <strong>{{ user_info.user.name }}</strong>
+                                    <div class="user-posts mt-2">
+                                        {% for post in user_info.posts %}
+                                        <div class="post mb-3">
+                                            <h6>{{ post.title }}</h6>
+                                            {% if post.image %}
+                                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid rounded" style="max-height: 200px; width: auto;">
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<script>
+    // Example JS to add interactions if needed
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("Page loaded and ready!");
+    });
+</script>
+
+<style>
+    .user-card {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .user-card strong {
+        font-size: 1.2rem;
+    }
+    
+    .post {
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        padding: 10px;
+        background-color: #ffffff;
+        margin-bottom: 10px;
+    }
+
+    .post h6 {
+        font-size: 1.1rem;
+    }
+</style>
+{% endblock %}

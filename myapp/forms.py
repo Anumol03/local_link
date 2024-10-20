@@ -29,3 +29,6 @@ class CoverpicForm(forms.ModelForm):
     class Meta:
         model=CustomUser
         fields=["cover_pic"]
+
+
+

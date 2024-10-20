@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import check_password
 
 from myapp.models import *
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login,logout
 from myapp.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -162,3 +162,42 @@ def district(request):
 
 def thrissur(request):
     return render(request,"thrissur.html")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('login') 
+
+
+def history_list_view(request):
+    histories = History.objects.all()  # Fetch all history records
+    return render(request, 'history_list.html', {'histories': histories})
+
+
+
+def service_list(request):
+    # Get all services
+    services = Service.objects.all()
+    
+    # Prepare a list to hold the service data
+    service_data = []
+    
+    for service in services:
+        # Get users who have made posts for this service
+        users_with_posts = CustomUser.objects.filter(service=service).prefetch_related('user_posts').distinct()
+
+        # Structure the data
+        user_posts_info = []
+        for user in users_with_posts:
+            posts = user.user_posts.filter(user=user)
+            user_posts_info.append({
+                'user': user,
+                'posts': posts
+            })
+        
+        service_data.append({
+            'service': service,
+            'users_with_posts': user_posts_info
+        })
+
+    return render(request, 'service_list.html', {'service_data': service_data})

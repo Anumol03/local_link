@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content_block %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">History</h2>
+    
+    <div class="row">
+        {% for history in histories %}
+        <div class="col-lg-4 col-md-6 col-sm-12 mb-4">  <!-- Adjust grid for different screen sizes -->
+            <div class="card shadow-sm h-100">  <!-- Full height cards -->
+                {% if history.picture %}
+                <img src="{{ history.picture.url }}" class="card-img-top img-fixed" alt="History Image">
+                {% else %}
+                <img src="https://via.placeholder.com/300x200" class="card-img-top img-fixed" alt="No Image Available">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ history.heading }}</h5>
+                    <p class="card-text">{{ history.content }}</p>
+                    <p class="text-muted">Year: {{ history.year_start }}{% if history.year_end %} - {{ history.year_end }}{% endif %}</p>
+                    <a href="#" class="btn btn-primary">Read more</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Custom styles for fixed image size -->
+<style>
+    .img-fixed {
+        width: 100%;    /* Ensures image takes up full card width */
+        height: 200px;  /* Fixed height for images */
+        object-fit: cover; /* Ensures image covers the area, cropping if necessary */
+    }
+</style>
+
+{% endblock %}
