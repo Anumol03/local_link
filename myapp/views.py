@@ -1,12 +1,11 @@
 
-
-from django.shortcuts import render, redirect,get_object_or_404
+from django.shortcuts import render, redirect ,get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.hashers import check_password
 
 from myapp.models import *
 from django.contrib import messages
-from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth import authenticate, login ,logout
 from myapp.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -24,7 +23,7 @@ def register(request):
         name = request.POST['name']
         adhar_no = request.POST['adhar_no']
         profile_pic = request.FILES.get('profile_pic')
-
+        print(password)
         # Check if ward details match
         try:
             ward = Ward.objects.get(ward_no=ward_no, house_no=house_no, name=name)
@@ -41,19 +40,20 @@ def register(request):
             messages.error(request, "Username or email already exists.")
             return redirect('register')
 
-        # Create the user but do not activate immediately
+        # Create the user and set inactive for admin approval
         user = CustomUser(
-            username=username, 
-            email=email, 
-            name=name, 
-            adhar_no=adhar_no, 
-            ward_no=ward_no, 
-            house_no=house_no, 
-            role='citizen', 
+            username=username,
+            email=email,
+            name=name,
+            adhar_no=adhar_no,
+            ward_no=ward_no,
+            house_no=house_no,
+            role='citizen',
             profile_pic=profile_pic
         )
         user.set_password(password)  # Hash the password
-        user.is_active = False  # Set to False until admin approves
+        user.is_active = True  # User is active, but not approved yet
+        user.is_approved = False  # Admin needs to approve this user
         user.save()
 
         messages.success(request, "Registration successful! Please wait for admin approval.")
@@ -62,36 +62,35 @@ def register(request):
     return render(request, 'register1.html')
 
 
+
 def login_view(request):
     if request.method == 'POST':
-        # Retrieve username and password from the request and strip extra spaces
+        # Retrieve username and password from the request
         username = request.POST['username'].strip()
         password = request.POST['password'].strip()
 
-        # Log the input values for debugging (can remove later)
-        print(f"Username: {username}, Password: {password}")
-
         # Authenticate user based on username and password
         user = authenticate(request, username=username, password=password)
-        print("user:", user)
-        
-        # If authentication was successful (user is not None)
+
+        # If authentication is successful (user is not None)
         if user is not None:
-            if user.is_active:  # Check if the user account is active
-                if user.is_approved:  # Check if the user is approved by admin
+            # Check if the user account is active and approved by admin
+            if user.is_active:
+                if user.is_approved:
                     # Log the user in
                     login(request, user)
                     messages.success(request, "Login successful!")
-                    return redirect('index')  # Redirect to home page after login
+                    return redirect('index')  # Redirect to home page
                 else:
-                    messages.error(request, "Account is not approved by admin yet.")
+                    messages.error(request, "Your account is not approved by admin yet.")
             else:
-                messages.error(request, "Account is inactive. Please contact support.")
+                messages.error(request, "Your account is inactive. Please contact support.")
         else:
             messages.error(request, "Invalid username or password.")
-    
+
     # Render the login page
     return render(request, 'login.html')
+
 
 def index(request):
     if request.method == 'POST':
@@ -121,55 +120,55 @@ def edit_user(request, user_id):
     else:
         form = UserEditForm(instance=user)
 
-    return render(request, 'edit_user.html', {'form': form,'user_id': user_id})
+    return render(request, 'edit_user.html', {'form': form ,'user_id': user_id})
 
 def profile_detail(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     posts = Posts.objects.filter(user=user).order_by('-created_date')  # List user's posts
     return render(request, 'user__detail.html', {'user': user, 'posts': posts})
 @login_required
-def add_like_view(request,*args,**kargs):
-    id=kargs.get("pk")
-    post_obj=Posts.objects.get(id=id)
+def add_like_view(request ,*args ,**kargs):
+    id =kargs.get("pk")
+    post_obj =Posts.objects.get(id=id)
     post_obj.liked_by.add(request.user)
     return redirect("index")
 @login_required
-def add_comment_view(request,*args,**kargs):
-    id=kargs.get("pk")
-    post_obj=Posts.objects.get(id=id)
-    comment=request.POST.get("comment")
-    user=request.user
-    Comments.objects.create(user=user,comment_text=comment,post=post_obj)
+def add_comment_view(request ,*args ,**kargs):
+    id =kargs.get("pk")
+    post_obj =Posts.objects.get(id=id)
+    comment =request.POST.get("comment")
+    user =request.user
+    Comments.objects.create(user=user ,comment_text=comment ,post=post_obj)
     return redirect("index")
 
 
 @login_required
-def remove_comment_view(request,*args,**kargs):
-    id=kargs.get("pk")
-    comment_obj=Comments.objects.get(id=id)
+def remove_comment_view(request ,*args ,**kargs):
+    id =kargs.get("pk")
+    comment_obj =Comments.objects.get(id=id)
     if request.user == comment_obj.user:
         comment_obj.delete()
         return redirect("index")
     else:
-        messages.error(request,"pls contact admin")
+        messages.error(request ,"pls contact admin")
         return redirect("signin")
-@login_required    
-def change_cover_pic_view(request,*args,**kargs):
-    id=kargs.get("pk")
-    prof_obj=UserEditForm.objects.get(id=id)
-    form=CoverpicForm(instance=prof_obj,data=request.POST,files=request.FILES)
-    if form.is_valid():
-        form.save()
-        return redirect("profiledetail",pk=id)
-    return redirect("profiledetail",pk=id)
+# @login_required
+# def change_cover_pic_view(request ,*args ,**kargs):
+#     id =kargs.get("pk")
+#     prof_obj =UserEditForm.objects.get(id=id)
+#     for m =CoverpicForm(instance=prof_obj ,data=request.POST ,files=request.FILES)
+#     if form.is_valid():
+#         form.save()
+#         return redirect("profiledetail" ,pk=id)
+#     return redirect("profiledetail" ,pk=id)
 
 
 def district(request):
-    return render(request,"district.html")
+    return render(request ,"district.html")
 
 
 def thrissur(request):
-    return render(request,"thrissur.html")
+    return render(request ,"thrissur.html")
 
 
 def logout_view(request):
