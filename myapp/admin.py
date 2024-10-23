@@ -14,13 +14,13 @@ admin.site.register(Service)
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = CustomUser
-        fields = ('username', 'email', 'name', 'adhar_no', 'ward_no', 'house_no', 'role')
+        fields = ('username', 'email', 'name', 'adhar_no', 'ward_no', 'house_no', 'role','service')
 
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = CustomUser
-        fields = ('username', 'email', 'name', 'adhar_no', 'ward_no', 'house_no', 'role')
+        fields = ('username', 'email', 'name', 'adhar_no', 'ward_no', 'house_no', 'role','service')
 
 
 class CustomUserAdmin(UserAdmin):
