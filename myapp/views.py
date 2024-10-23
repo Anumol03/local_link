@@ -27,7 +27,7 @@ def register(request):
 
         # Check if ward details match
         try:
-            ward = Ward.objects.get(ward_no=ward_no, house_no=house_no ,name=name)
+            ward = Ward.objects.get(ward_no=ward_no, house_no=house_no, name=name)
         except Ward.DoesNotExist:
             messages.error(request, "Ward details do not match.")
             return redirect('register')
@@ -42,8 +42,17 @@ def register(request):
             return redirect('register')
 
         # Create the user but do not activate immediately
-        user = CustomUser(username=username, email=email, name=name, adhar_no=adhar_no, ward_no=ward_no, house_no=house_no, role='citizen', profile_pic=profile_pic)
-        user.set_password(password)
+        user = CustomUser(
+            username=username, 
+            email=email, 
+            name=name, 
+            adhar_no=adhar_no, 
+            ward_no=ward_no, 
+            house_no=house_no, 
+            role='citizen', 
+            profile_pic=profile_pic
+        )
+        user.set_password(password)  # Hash the password
         user.is_active = False  # Set to False until admin approves
         user.save()
 
@@ -55,35 +64,34 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username'].strip()  # Remove leading/trailing spaces
-        password = request.POST['password'].strip()  # Remove leading/trailing spaces
-        print(username, password)
+        # Retrieve username and password from the request and strip extra spaces
+        username = request.POST['username'].strip()
+        password = request.POST['password'].strip()
 
-        try:
-            # Retrieve the user by username
-            user = CustomUser.objects.get(username=username)
-            print(user)
+        # Log the input values for debugging (can remove later)
+        print(f"Username: {username}, Password: {password}")
 
-            # Check if the password is correct
-            if check_password(password, user.password):
-                if user.is_active:  # Check if the user's account is active
-                    if user.is_approved:  # Check if the user has been approved by an admin
-                        login(request, user)
-                        messages.success(request, "Login successful!")
-                        return redirect('index')  # Redirect to the home page or dashboard after login
-                    else:
-                        messages.error(request, "Account is not approved by admin yet.")
+        # Authenticate user based on username and password
+        user = authenticate(request, username=username, password=password)
+        print("user:", user)
+        
+        # If authentication was successful (user is not None)
+        if user is not None:
+            if user.is_active:  # Check if the user account is active
+                if user.is_approved:  # Check if the user is approved by admin
+                    # Log the user in
+                    login(request, user)
+                    messages.success(request, "Login successful!")
+                    return redirect('index')  # Redirect to home page after login
                 else:
-                    messages.error(request, "Account is inactive. Please contact support.")
+                    messages.error(request, "Account is not approved by admin yet.")
             else:
-                messages.error(request, "Invalid username or password.")
-        except CustomUser.DoesNotExist:
+                messages.error(request, "Account is inactive. Please contact support.")
+        else:
             messages.error(request, "Invalid username or password.")
-
+    
+    # Render the login page
     return render(request, 'login.html')
-
-
-
 
 def index(request):
     if request.method == 'POST':
