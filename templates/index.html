@@ -30,14 +30,14 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
   <a href="{%url 'profile_detail' user.id%}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Account Settings"><i class="fa fa-user"></i></a>
   {% endif %}
   <!-- <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Messages"><i class="fa fa-envelope"></i></a> -->
-  <div class="w3-dropdown-hover w3-hide-small">
+  <!-- <div class="w3-dropdown-hover w3-hide-small">
     <button class="w3-button w3-padding-large" title="Notifications"><i class="fa fa-bell"></i><span class="w3-badge w3-right w3-small w3-green">3</span></button>     
     <div class="w3-dropdown-content w3-card-4 w3-bar-block" style="width:300px">
       <a href="#" class="w3-bar-item w3-button">One new friend request</a>
       <a href="#" class="w3-bar-item w3-button">John Doe posted on your wall</a>
       <a href="#" class="w3-bar-item w3-button">Jane likes your post</a>
     </div>
-  </div>
+  </div> -->
  
  </div>
 </div>
@@ -376,11 +376,11 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     <div class="w3-col m2">
       <div class="w3-card w3-round w3-white w3-center">
         <div class="w3-container">
-          <p>Upcoming Events:</p>
-          <img src="/w3images/forest.jpg" alt="Forest" style="width:100%;">
-          <p><strong>Holiday</strong></p>
+          <!-- <p>Upcoming Events:</p> -->
+          <img src="{% static 'm1.jpg' %}" alt="Forest" style="width:100%;">
+          <!-- <p><strong>Holiday</strong></p> -->
           <p>Friday 15:00</p>
-          <p><button class="w3-button w3-block w3-theme-l4">Info</button></p>
+          <p><button class="w3-button w3-block w3-theme-l4">new</button></p>
         </div>
       </div>
       <br>
