@@ -45,7 +45,7 @@ class CustomUserAdmin(UserAdmin):
             'classes': ('wide',),
             'fields': (
             'username', 'email', 'password1', 'password2', 'name', 'adhar_no', 'ward_no', 'house_no', 'dob', 'role',
-            'is_active', 'is_approved')}
+            'is_active', 'is_approved','service')}
          ),
     )
 
