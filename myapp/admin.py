@@ -52,3 +52,5 @@ class CustomUserAdmin(UserAdmin):
 
 # Register the CustomUser model with the admin
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Complaint)
+admin.site.register(ComplaintReply)

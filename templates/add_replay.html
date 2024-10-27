@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content_block %}
+<div class="container mt-5">
+    <h2>Reply to Complaint from {{ complaint.user.name }}</h2>
+    <form action="{% url 'add_reply' complaint.id %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="reply" class="form-label">Your Reply</label>
+            <textarea name="reply" class="form-control" id="reply" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Reply</button>
+    </form>
+</div>
+{% endblock %}

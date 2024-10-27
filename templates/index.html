@@ -125,6 +125,16 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
           {% if request.user.is_authenticated %}
           <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
             
+            <i class="fa-solid fa-pen-nib"></i>
+           
+            
+            <a href="{%url 'complaint_list' %}" class="text-white">Complaints</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
             <i class="fa-solid fa-person"></i>
            
             
@@ -172,16 +182,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
            
           </button>
           {% endif %}
-          {% if request.user.is_authenticated %}
-          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
-            
-            <i class="fa-brands fa-medium"></i>
-           
-            
-            <a href="{%url 'service_list' %}" class="text-white">Complaint and Feedback</a>
-           
-          </button>
-          {% endif %}
+          
           <div id="Demo1" class="w3-hide w3-container">
             <!-- <p>Some text..</p> -->
           </div>
@@ -252,8 +253,39 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     </div>
     
     <!-- Middle Column -->
+     
 
     <div class="w3-col m7">
+      <div class="w3-row-padding">
+        <div class="w3-col m12">
+          <div class="w3-card w3-round w3-white">
+            <div class="w3-container w3-padding">
+              <div id="carouselExampleFade" class="carousel slide carousel-fade">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="{%static 'm2.jpg' %}" class="d-block w-100 " style="height: 300px;" alt="...">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="{%static 'm3.jpg' %}" class="d-block w-100" style="height: 300px;" alt="...">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="{%static 'm4.jpg' %}" class="d-block w-100" style="height: 300px;" alt="...">
+                  </div>
+                </div>
+                <p>Chelakkara is a large town in Thrissur district of Kerala.Chelakkara assembly constituency (SC) is part of Alathur. Chelakkara is located at 10.70°N 76.35°E. It has an average elevation of 6 m (20 ft). It is also the constituency of ex-Speaker of Kerala Assembly and current Minister for Welfare of Scheduled Castes, Scheduled Tribes and Backward Classes, Devaswoms, Parliamentary Affairs of Kerala K. Radhakrishnan.Chelakkara (ചേലക്കര) Gram Panchayat is a Rural Local Body in Pazhayannur Panchayat Samiti part of Thrissur Zila Parishad. There are total 6 Villages under Chelakkara Gram Panchayat jurisdiction. Gram Panchayat Pazhayannur is further divided into 22 Wards. Gram Panchayat Pazhayannur has total 19 elected members by people. Gram Panchayat Pazhayannur has total 17 schools.One of the celebrated pooram Vela in Thrissur dist - in certainty in Kerala. Anthimhakalan kavu situated in Chelakkara, which is acclaimed for firecrackers and customary festivals called Kala kali.</p>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
     
       <div class="w3-row-padding">
         <div class="w3-col m12">
@@ -523,6 +555,7 @@ function openNav() {
   }
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </body>
 </html> 

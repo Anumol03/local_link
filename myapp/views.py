@@ -208,3 +208,30 @@ def service_list(request):
         })
 
     return render(request, 'service_list.html', {'service_data': service_data})
+
+
+def create_complaint(request):
+    if request.method == 'POST':
+        form = ComplaintForm(request.POST, request.FILES)
+        if form.is_valid():
+            complaint = form.save(commit=False)
+            complaint.user = request.user
+            complaint.save()
+            return redirect('complaint_list')
+    else:
+        form = ComplaintForm()
+    return render(request, 'create_complaint.html', {'form': form})
+
+def complaint_list(request):
+    complaints = Complaint.objects.all()  # Fetch all complaints
+    return render(request, 'complaint_list.html', {'complaints': complaints})
+
+def add_reply(request, complaint_id):
+    complaint = get_object_or_404(Complaint, id=complaint_id)
+    
+    if request.method == 'POST':
+        reply_text = request.POST.get('reply')
+        ComplaintReply.objects.create(complaint=complaint, reply_text=reply_text, admin=request.user)
+        return redirect('complaint_list')
+
+    return render(request, 'add_replay.html', {'complaint': complaint})  # Show the reply form

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
 class Ward(models.Model):
@@ -76,3 +77,24 @@ class History(models.Model):
 
     def __str__(self):
         return self.heading
+
+
+class Complaint(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="complaints")
+    ward_no = models.PositiveIntegerField()  # Ward number linked to complaint
+    ward_name = models.CharField(max_length=200)  # Ward name for the complaint
+    text_complaint = models.TextField()  # Text complaint section
+    pdf_complaint = models.FileField(upload_to="complaints_pdfs/", blank=True, null=True)  # PDF upload for complaint
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Complaint by {self.user.name} in Ward {self.ward_no}"
+
+class ComplaintReply(models.Model):
+    complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, related_name="replies")
+    admin = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, limit_choices_to={'is_staff': True})
+    reply_text = models.TextField()
+    reply_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Reply by {self.admin} on {self.reply_date}"

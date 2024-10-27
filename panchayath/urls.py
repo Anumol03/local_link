@@ -35,4 +35,7 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('history/', history_list_view, name='history-list'),
     path('services/', service_list, name='service_list'),
+    path('complaint/create/', create_complaint, name='create_complaint'),
+    path('complaints/', complaint_list, name='complaint_list'),
+    path('complaint/<int:complaint_id>/reply/', add_reply, name='add_reply'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

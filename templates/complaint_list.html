@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content_block %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/33f0db9616.js" crossorigin="anonymous"></script>
+
+<h2 class="text-center" style="margin-top: 100px;">Complaints List</h2>
+<div class="text-center mb-4">
+    <a href="{%url 'create_complaint' %}" class="btn btn-success btn-lg">
+        <i class="fas fa-plus"></i> Add Your Complaint
+    </a>
+</div>
+<div class="container">
+    {% for complaint in complaints %}
+        <div class="card my-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title"><strong>User:</strong> {{ complaint.user.name }}</h5>
+                <p class="card-subtitle mb-2 text-muted">
+                    <strong>Ward:</strong> {{ complaint.ward_name }} ({{ complaint.ward_no }})
+                </p>
+                <p class="card-text"><strong>Complaint:</strong> {{ complaint.text_complaint }}</p>
+
+                <!-- PDF Link -->
+                {% if complaint.pdf_complaint %}
+                    <p>
+                        <a href="{{ complaint.pdf_complaint.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-file-pdf"></i> View PDF
+                        </a>
+                    </p>
+                {% endif %}
+
+                <!-- Replies Section -->
+                <div class="mt-4">
+                    <h6><strong>Admin Replies:</strong></h6>
+                    {% for reply in complaint.replies.all %}
+                        <div class="border rounded p-2 mb-2 bg-light">
+                            <p class="mb-1"><strong>Reply:</strong> {{ reply.reply_text }}</p>
+                            <small class="text-muted">
+                                By {{ reply.admin.username }} on {{ reply.reply_date }}
+                            </small>
+                        </div>
+                    {% empty %}
+                        <p>No replies yet.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Reply Button -->
+                <!-- <a href="{% url 'add_reply' complaint.id %}" class="btn btn-primary mt-3">
+                    <i class="fas fa-reply"></i> Reply
+                </a> -->
+            </div>
+        </div>
+    {% empty %}
+        <p>No complaints available.</p>
+    {% endfor %}
+</div>
+{% endblock %}
