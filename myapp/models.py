@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Ward(models.Model):
@@ -98,3 +99,13 @@ class ComplaintReply(models.Model):
 
     def __str__(self):
         return f"Reply by {self.admin} on {self.reply_date}"
+    
+
+class Feedback(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="feedbacks")
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])  # Star rating from 1 to 5
+    feedback_text = models.TextField()  # Detailed feedback from the user
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback by {self.user.username} - {self.rating} stars"

@@ -9,6 +9,8 @@ from django.contrib.auth import authenticate, login ,logout
 from myapp.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+
 
 
 
@@ -177,8 +179,13 @@ def logout_view(request):
 
 
 def history_list_view(request):
-    histories = History.objects.all()  # Fetch all history records
-    return render(request, 'history_list.html', {'histories': histories})
+    histories = History.objects.all().order_by('-year_start')  # Fetch all history records, ordered by year descending
+    paginator = Paginator(histories, 6)  # Show 6 histories per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'history_list.html', {'page_obj': page_obj})
 
 
 
@@ -235,3 +242,25 @@ def add_reply(request, complaint_id):
         return redirect('complaint_list')
 
     return render(request, 'add_replay.html', {'complaint': complaint})  # Show the reply form
+
+
+def submit_feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.user = request.user
+            feedback.save()
+            messages.success(request, "Thank you for your feedback!")
+            form = FeedbackForm()  # Reset form after successful submission
+    else:
+        form = FeedbackForm()
+    return render(request, 'submit_feedback.html', {'form': form})
+
+
+def feedback_list(request):
+    feedbacks = Feedback.objects.all()
+    # Create a list of feedback with an extra attribute for stars
+    for feedback in feedbacks:
+        feedback.stars = range(feedback.rating)  # Add a range object to the feedback
+    return render(request, 'feedback_list.html', {'feedbacks': feedbacks})

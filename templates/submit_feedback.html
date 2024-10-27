@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content_block %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<div class="feedback-container">
+    <h1 class="text-center">Submit Feedback</h1>
+
+    <form id="feedbackForm" method="post" action="{% url 'submit_feedback' %}" onsubmit="showThankYouMessage(event)" class="col-md-6 mx-auto">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+    </form>
+
+    <!-- Flying Ribbon Popup -->
+    <div id="ribbonPopup">Thank you for your feedback!</div>
+</div>
+
+<style>
+    .feedback-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+
+    #ribbonPopup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px 40px;
+        background-color: #4CAF50;
+        color: white;
+        font-size: 1.5em;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        animation: slideIn 1s forwards, fadeOut 3s 2s forwards;
+    }
+
+    @keyframes slideIn {
+        to {
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    @keyframes fadeOut {
+        to {
+            opacity: 0;
+        }
+    }
+</style>
+
+<script>
+    function showThankYouMessage(event) {
+        event.preventDefault();
+        const form = document.getElementById("feedbackForm");
+
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(response => {
+            if (response.ok) {
+                const ribbonPopup = document.getElementById("ribbonPopup");
+                ribbonPopup.style.display = "block";
+                setTimeout(() => {
+                    ribbonPopup.style.display = "none";
+                }, 4000);
+                form.reset();
+            } else {
+                alert("There was an error submitting your feedback. Please try again.");
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert("Submission failed. Please try again later.");
+        });
+    }
+</script>
+{% endblock %}

@@ -5,7 +5,7 @@
     <h2 class="text-center mb-4">History</h2>
     
     <div class="row">
-        {% for history in histories %}
+        {% for history in page_obj %}
         <div class="col-lg-4 col-md-6 col-sm-12 mb-4">  <!-- Adjust grid for different screen sizes -->
             <div class="card shadow-sm h-100">  <!-- Full height cards -->
                 {% if history.picture %}
@@ -21,7 +21,25 @@
                 </div>
             </div>
         </div>
+        {% empty %}
+        <p class="text-center">No history records available.</p>
         {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination justify-content-center my-4">
+        <span class="mr-2">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="btn btn-outline-secondary">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary">Previous</a>
+        {% endif %}
+        
+        <span class="mx-2">...</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-secondary">Last</a>
+        {% endif %}
     </div>
 </div>
 

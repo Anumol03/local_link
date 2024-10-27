@@ -38,4 +38,7 @@ urlpatterns = [
     path('complaint/create/', create_complaint, name='create_complaint'),
     path('complaints/', complaint_list, name='complaint_list'),
     path('complaint/<int:complaint_id>/reply/', add_reply, name='add_reply'),
+    path('feedback/', submit_feedback, name='submit_feedback'),
+    path('feedbacks/', feedback_list, name='feedback_list'),
+    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

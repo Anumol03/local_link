@@ -135,6 +135,16 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
           {% if request.user.is_authenticated %}
           <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
             
+            <i class="fa-solid fa-comments"></i>
+           
+            
+            <a href="{%url 'feedback_list' %}" class="text-white">FeedBacks</a>
+           
+          </button>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            
             <i class="fa-solid fa-person"></i>
            
             

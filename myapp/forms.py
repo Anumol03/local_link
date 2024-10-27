@@ -54,4 +54,14 @@ class ComplaintReplyForm(forms.ModelForm):
         }
 
 
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ['rating', 'feedback_text']
+        widgets = {
+            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5, 'placeholder': 'Rate from 1 to 5'}),
+            'feedback_text': forms.Textarea(attrs={'placeholder': 'Write your feedback here...'}),
+        }
+
+
 
