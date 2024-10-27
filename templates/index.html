@@ -66,7 +66,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
          {% if user.profile_pic %}
          <p class="w3-center"><img src="{{ user.profile_pic.url }}" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
          {%else%}
-         <p class="w3-center"><img src="/media/profilepics/default.jpg" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
+         <p class="w3-center"><img src="/media/profilepics/deafault.jpg" class="w3-circle" style="height:106px;width:106px" alt="Avatar"></p>
          {%endif%}
          <hr>
         
@@ -261,16 +261,22 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
             <div class="w3-container w3-padding">
               {% if request.user.is_authenticated %}
               <form action="" method="post" enctype="multipart/form-data">
-                {%csrf_token%}
+                {% csrf_token %}
                 <div class="mb-3">
-                <input type="text" class="w3-border w3-padding form-control" name="title">
-               </div>
-               <div class="mb-3">
-                <input type="file" class="form-control" name="image">
-              </div>
+                    <input type="text" class="w3-border w3-padding form-control" name="title" placeholder="Enter title">
+                </div>
+                <div class="mb-3">
+                    <input type="file" class="form-control" name="image" accept="image/*">
+                </div>
+                <div class="mb-3">
+                    <input type="file" class="form-control" name="video" accept="video/*"> <!-- New video field -->
+                </div>
                 
-                <button type="submit" class="w3-button w3-theme"><i class="fa fa-pencil"></i>  Post</button>
-               </form>
+                <button type="submit" class="w3-button w3-theme">
+                    <i class="fa fa-pencil"></i> Post
+                </button>
+            </form>
+            
                {% endif %}
             </div>
           </div>
@@ -278,40 +284,58 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
       </div>
       
       <!-- main loop for listing all posts -->
-     {%for post in posts%}
-     <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
-      {% if post.user.profile_pic and post.user.profile_pic.url %}
-      <img src="{{ post.user.profile_pic.url }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px;height: 60px;">
-    {% else %}
-      <img src="/media/profilepics/default.jpg" alt="Default Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px;height: 60px;">
-    {% endif %}
-      <span class="w3-right w3-opacity">1 min</span>
-      <h4>{{post.user}}</h4><br>
-      <hr class="w3-clear">
-      <p> {{post.title}}</p>
-        <div class="w3-row-padding" style="margin:0 -16px">
-          <div class="w3-half">
-            <img src="{{post.image.url}}" style="width:100%" alt="Northern Lights" class="w3-margin-bottom">
-          </div>
+      {% for post in posts %}
+      <div class="w3-container w3-card w3-white w3-round w3-margin"><br>
+          {% if post.user.profile_pic and post.user.profile_pic.url %}
+              <img src="{{ post.user.profile_pic.url }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px;height: 60px;">
+          {% else %}
+              <img src="/media/profilepics/deafault.jpg" alt="Default Avatar" class="w3-left w3-circle w3-margin-right" style="width:60px;height: 60px;">
+          {% endif %}
           
-      </div>
-      {% if request.user.is_authenticated %}<a href="{%url 'add-like' post.id%}"  class="w3-button w3-theme-d1 w3-margin-bottom">{% endif %}<i class="fa fa-thumbs-up"></i>  {{post.liked_by.all|length}}</a>
-      <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom"><i class="fa fa-comment"></i>  {{post.post_comment.all|length}}</button>
-      <!-- add comment section --> 
-      {% if request.user.is_authenticated %}
-      <form action="{%url 'add-comment' post.id%}" method="post">
-        {%csrf_token%}
-      <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">
-          {%if request.user.profile.profile_pic%}
-          <img src="{{request.user.profile.profile_pic.url}}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:40px; height: 40px; ">
-          {%endif%}
-        </span>
-        <input type="text" class="form-control" placeholder="Add your comment" aria-label="Recipient's username" aria-describedby="button-addon2" name="comment">
-        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Button</button>
-      </div>
-    </form>
-    {% endif %}
+          <span class="w3-right w3-opacity">1 min</span>
+          <h4>{{ post.user }}</h4><br>
+          <hr class="w3-clear">
+          <p>{{ post.title }}</p>
+          
+          <div class="w3-row-padding" style="margin:0 -16px">
+              {% if post.image %}
+                  <div class="w3-half">
+                      <img src="{{ post.image.url }}" style="width:100%" alt="Post Image" class="w3-margin-bottom">
+                  </div>
+              {% elif post.video %}
+                  <div class="w3-half">
+                      <video controls style="width:100%" class="w3-margin-bottom">
+                          <source src="{{ post.video.url }}" type="video/mp4">
+                          Your browser does not support the video tag.
+                      </video>
+                  </div>
+              {% endif %}
+          </div>
+  
+          {% if request.user.is_authenticated %}
+              <a href="{% url 'add-like' post.id %}" class="w3-button w3-theme-d1 w3-margin-bottom">
+                  <i class="fa fa-thumbs-up"></i> {{ post.liked_by.all|length }}
+              </a>
+              <button type="button" class="w3-button w3-theme-d2 w3-margin-bottom">
+                  <i class="fa fa-comment"></i> {{ post.post_comment.all|length }}
+              </button>
+          {% endif %}
+          
+          <!-- Add comment section -->
+          {% if request.user.is_authenticated %}
+              <form action="{% url 'add-comment' post.id %}" method="post">
+                  {% csrf_token %}
+                  <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">
+                          {% if request.user.profile.profile_pic %}
+                              <img src="{{ request.user.profile.profile_pic.url }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:40px; height: 40px;">
+                          {% endif %}
+                      </span>
+                      <input type="text" class="form-control" placeholder="Add your comment" aria-label="Recipient's username" aria-describedby="button-addon2" name="comment">
+                      <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Button</button>
+                  </div>
+              </form>
+          {% endif %}
        <!-- end comment section -->
 
        <!-- listing comment section -->

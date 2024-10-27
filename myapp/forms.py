@@ -22,7 +22,7 @@ class UserEditForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model=Posts
-        fields=["title","image"]
+        fields=["title","image",'video']
 
 
 class CoverpicForm(forms.ModelForm):
