@@ -189,7 +189,7 @@ def history_list_view(request):
     )
 
     # Paginate to show 6 histories per page
-    paginator = Paginator(histories, 2)
+    paginator = Paginator(histories, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
