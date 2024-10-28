@@ -13,7 +13,26 @@
 <script src="https://kit.fontawesome.com/33f0db9616.js" crossorigin="anonymous"></script>
 <style>
 html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
+  /* Ensure the navbar stays on top */
+  .w3-top {
+    z-index: 1000; /* Higher z-index to stay on top */
+    position: fixed;
+    width: 100%;
+  }
+
+  /* Add padding to prevent content from hiding under the navbar */
+  body {
+    padding-top: 50px; /* Adjust based on navbar height */
+  }
+
+  /* Additional styling for the carousel controls */
+  .carousel-control-prev, .carousel-control-next {
+    z-index: 1; /* To make sure they’re clickable over the carousel */
+  }
+
+
 </style>
+
 </head>
 <body class="w3-theme-l5">
 
@@ -24,7 +43,7 @@ html, body, h1, h2, h3, h4, h5 {font-family: "Open Sans", sans-serif}
     <i class="fa-solid fa-power-off"></i>
   </a>
   <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-theme-d2" href="javascript:void(0);" onclick="openNav()"><i class="fa fa-bars"></i></a>
-  <a href="{%url 'index' %}" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Local Link</a>
+  <a href="{% url 'index' %}" class="w3-bar-item w3-button w3-padding-large w3-theme-d4"><i class="fa fa-home w3-margin-right"></i>Local Link</a>
   <!-- <a href="#" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="News"><i class="fa fa-globe"></i></a> -->
   {% if request.user.is_authenticated %}
   <a href="{%url 'profile_detail' user.id%}" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Account Settings"><i class="fa fa-user"></i></a>

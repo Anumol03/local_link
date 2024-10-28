@@ -5,9 +5,9 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Ward(models.Model):
-    ward_no = models.PositiveIntegerField()
-    house_no = models.PositiveIntegerField()
-    name = models.CharField(max_length=200)
+    ward_no = models.PositiveIntegerField(null=True,blank=True)
+    house_no = models.PositiveIntegerField(null=True,blank=True)
+    name = models.CharField(max_length=200,null=True,blank=True)
 
     def __str__(self):
         return self.name
@@ -27,9 +27,9 @@ class CustomUser(AbstractUser):
     ]
 
     email = models.EmailField(unique=True)
-    ward_no = models.CharField(max_length=10)
-    house_no = models.CharField(max_length=10)
-    name = models.CharField(max_length=100)
+    ward_no = models.CharField(max_length=10,null=True,blank=True)
+    house_no = models.CharField(max_length=10,null=True,blank=True)
+    name = models.CharField(max_length=100,null=True,blank=True)
     adhar_no = models.CharField(max_length=12, unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES)
     description = models.CharField(max_length=200, null=True, blank=True)

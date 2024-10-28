@@ -1,17 +1,14 @@
-
-from django.shortcuts import render, redirect ,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.hashers import check_password
-
+from django.db.models import F
 from myapp.models import *
 from django.contrib import messages
-from django.contrib.auth import authenticate, login ,logout
+from django.contrib.auth import authenticate, login, logout
 from myapp.forms import *
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-
-
 
 
 def register(request):
@@ -64,7 +61,6 @@ def register(request):
     return render(request, 'register1.html')
 
 
-
 def login_view(request):
     if request.method == 'POST':
         # Retrieve username and password from the request
@@ -111,9 +107,10 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
+
 def edit_user(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
-    
+
     if request.method == 'POST':
         form = UserEditForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
@@ -122,38 +119,45 @@ def edit_user(request, user_id):
     else:
         form = UserEditForm(instance=user)
 
-    return render(request, 'edit_user.html', {'form': form ,'user_id': user_id})
+    return render(request, 'edit_user.html', {'form': form, 'user_id': user_id})
+
 
 def profile_detail(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     posts = Posts.objects.filter(user=user).order_by('-created_date')  # List user's posts
     return render(request, 'user__detail.html', {'user': user, 'posts': posts})
+
+
 @login_required
-def add_like_view(request ,*args ,**kargs):
-    id =kargs.get("pk")
-    post_obj =Posts.objects.get(id=id)
+def add_like_view(request, *args, **kargs):
+    id = kargs.get("pk")
+    post_obj = Posts.objects.get(id=id)
     post_obj.liked_by.add(request.user)
     return redirect("index")
+
+
 @login_required
-def add_comment_view(request ,*args ,**kargs):
-    id =kargs.get("pk")
-    post_obj =Posts.objects.get(id=id)
-    comment =request.POST.get("comment")
-    user =request.user
-    Comments.objects.create(user=user ,comment_text=comment ,post=post_obj)
+def add_comment_view(request, *args, **kargs):
+    id = kargs.get("pk")
+    post_obj = Posts.objects.get(id=id)
+    comment = request.POST.get("comment")
+    user = request.user
+    Comments.objects.create(user=user, comment_text=comment, post=post_obj)
     return redirect("index")
 
 
 @login_required
-def remove_comment_view(request ,*args ,**kargs):
-    id =kargs.get("pk")
-    comment_obj =Comments.objects.get(id=id)
+def remove_comment_view(request, *args, **kargs):
+    id = kargs.get("pk")
+    comment_obj = Comments.objects.get(id=id)
     if request.user == comment_obj.user:
         comment_obj.delete()
         return redirect("index")
     else:
-        messages.error(request ,"pls contact admin")
+        messages.error(request, "pls contact admin")
         return redirect("signin")
+
+
 # @login_required
 # def change_cover_pic_view(request ,*args ,**kargs):
 #     id =kargs.get("pk")
@@ -166,36 +170,39 @@ def remove_comment_view(request ,*args ,**kargs):
 
 
 def district(request):
-    return render(request ,"district.html")
+    return render(request, "district.html")
 
 
 def thrissur(request):
-    return render(request ,"thrissur.html")
+    return render(request, "thrissur.html")
 
 
 def logout_view(request):
     logout(request)
-    return redirect('login') 
+    return redirect('login')
 
 
 def history_list_view(request):
-    histories = History.objects.all().order_by('-year_start')  # Fetch all history records, ordered by year descending
-    paginator = Paginator(histories, 6)  # Show 6 histories per page
 
+    histories = History.objects.all().order_by(
+        F('year_end').desc(nulls_first=True), '-year_start'
+    )
+
+    # Paginate to show 6 histories per page
+    paginator = Paginator(histories, 2)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'history_list.html', {'page_obj': page_obj})
 
 
-
 def service_list(request):
     # Get all services
     services = Service.objects.all()
-    
+
     # Prepare a list to hold the service data
     service_data = []
-    
+
     for service in services:
         # Get users who have made posts for this service
         users_with_posts = CustomUser.objects.filter(service=service).prefetch_related('user_posts').distinct()
@@ -208,7 +215,7 @@ def service_list(request):
                 'user': user,
                 'posts': posts
             })
-        
+
         service_data.append({
             'service': service,
             'users_with_posts': user_posts_info
@@ -229,13 +236,15 @@ def create_complaint(request):
         form = ComplaintForm()
     return render(request, 'create_complaint.html', {'form': form})
 
+
 def complaint_list(request):
-    complaints = Complaint.objects.all()  # Fetch all complaints
+    complaints = Complaint.objects.all().order_by('-id')  # Fetch all complaints
     return render(request, 'complaint_list.html', {'complaints': complaints})
+
 
 def add_reply(request, complaint_id):
     complaint = get_object_or_404(Complaint, id=complaint_id)
-    
+
     if request.method == 'POST':
         reply_text = request.POST.get('reply')
         ComplaintReply.objects.create(complaint=complaint, reply_text=reply_text, admin=request.user)
